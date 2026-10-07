@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ScamShield — Before You Pay, Check</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07111f;color:#eef5ff;font-family:Arial,sans-serif}
+main{max-width:700px;margin:auto;padding:25px 18px 50px}
+.brand{font-size:23px;font-weight:bold}
+.brand span{color:#42e8a1}
+.hero{padding:50px 0 25px}
+.green{color:#42e8a1;font-size:12px;font-weight:bold;letter-spacing:2px}
+h1{font-size:42px;line-height:1;margin:12px 0}
+p{color:#9eb0c8;line-height:1.6}
+.card{background:#0d1b2e;border:1px solid #203650;border-radius:20px;padding:20px;margin:16px 0}
+.tabs{display:flex;gap:8px}
+.tab{flex:1;padding:13px;border:1px solid #29415c;border-radius:10px;background:#081526;color:#9eb0c8;font-weight:bold}
+.tab.active{background:#173550;color:white}
+label{display:block;margin:16px 0 7px;color:#b9c8da}
+input,textarea{width:100%;padding:14px;border-radius:12px;border:1px solid #29415c;background:#081526;color:white;font-size:15px}
+textarea{height:100px}
+button.check{width:100%;margin-top:14px;padding:15px;border:0;border-radius:12px;background:#42e8a1;color:#062018;font-weight:bold;font-size:15px}
+.result{display:none;margin-top:15px;padding:16px;border-radius:15px}
+.low{background:#0b3327}.caution{background:#3b2d0b}.high{background:#3d111b}
+.score{font-size:32px;font-weight:bold;margin:8px 0}
+.signal{padding:8px 0;color:#d8e4f0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.box{padding:15px;border:1px solid #203650;border-radius:14px;background:#09182a}
+.small{font-size:13px;color:#9eb0c8}
+footer{text-align:center;color:#667991;font-size:12px;margin-top:30px}
+@media(max-width:500px){h1{font-size:36px}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+
+<body>
+<main>
+
+<div class="brand">Scam<span>Shield</span> 🛡️</div>
+
+<section class="hero">
+<div class="green">TRUST BEFORE TRANSACTION</div>
+<h1>Before you pay, check.</h1>
+<p>Check a phone number, bank account or website for warning signs before sending money.</p>
+</section>
+
+<section class="card">
+
+<div class="tabs">
+<button class="tab active" onclick="setType('phone',this)">Phone</button>
+<button class="tab" onclick="setType('account',this)">Account</button>
+<button class="tab" onclick="setType('link',this)">Link</button>
+</div>
+
+<label id="label">Phone number</label>
+<input id="target" placeholder="+234 801 234 5678">
+
+<button class="check" onclick="checkRisk()">Check for warning signs</button>
+
+<div id="result" class="result">
+<div id="level"></div>
+<div id="score" class="score"></div>
+<strong id="headline"></strong>
+<p id="details"></p>
+<div class="signal">🚩 Verify the person's identity</div>
+<div class="signal">🚩 Be careful with payment pressure</div>
+<div class="signal">🚩 Never ignore suspicious behaviour</div>
+</div>
+
+<p class="small">
+ScamShield gives risk indicators, not a declaration that someone is a criminal.
+Always verify before making a payment.
+</p>
+
+</section>
+
+<section class="card">
+<h2>Report something suspicious</h2>
+<p class="small">Help protect other people by reporting suspicious transactions.</p>
+
+<label>Phone, account or link</label>
+<input id="reportTarget" placeholder="Enter suspicious item">
+
+<label>What happened?</label>
+<textarea id="reportText" placeholder="Describe what happened..."></textarea>
+
+<button class="check" onclick="report()">Submit Report</button>
+<p id="status" class="small"></p>
+</section>
+
+<section class="card">
+<h2>How ScamShield works</h2>
+
+<div class="grid">
+<div class="box"><b>🔎 Check</b><p class="small">Check suspicious information before paying.</p></div>
+<div class="box"><b>🚩 Report</b><p class="small">Report suspicious experiences.</p></div>
+<div class="box"><b>🧠 Analyze</b><p class="small">Identify potential warning signs.</p></div>
+<div class="box"><b>🛡️ Protect</b><p class="small">Pause and verify before transferring money.</p></div>
+</div>
+
+</section>
+
+<footer>ScamShield © 2026 • Before you pay, check.</footer>
+
+</main>
+
+<script>
+let type="phone";
+
+function setType(t,btn){
+type=t;
+document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+btn.classList.add("active");
+
+let labels={
+phone:["Phone number","+234 801 234 5678"],
+account:["Bank account number","1234567890"],
+link:["Website or payment link","https://example.com"]
+};
+
+document.getElementById("label").innerText=labels[t][0];
+document.getElementById("target").placeholder=labels[t][1];
+}
+
+function score(text){
+let n=0;
+for(let i=0;i<text.length;i++){
+n=(n*31+text.charCodeAt(i))%101;
+}
+return n;
+}
+
+function checkRisk(){
+let value=document.getElementById("target").value.trim();
+
+if(!value){
+alert("Enter something to check.");
+return;
+}
+
+let s=score(value+type);
+let result=document.getElementById("result");
+let level=document.getElementById("level");
+
+result.style.display="block";
+result.className="result";
+
+if(s>=70){
+result.classList.add("high");
+level.innerText="🔴 HIGH RISK";
+document.getElementById("headline").innerText="Multiple warning indicators may be present";
+}
+else if(s>=35){
+result.classList.add("caution");
+level.innerText="🟡 CAUTION";
+document.getElementById("headline").innerText="Some warning signs may be present";
+}
+else{
+result.classList.add("low");
+level.innerText="🟢 LOW RISK";
+document.getElementById("headline").innerText="No demo warning pattern detected";
+}
+
+document.getElementById("score").innerText=s+"/100";
+document.getElementById("details").innerText=
+"This is currently a demonstration. The production version will use verified reports and intelligence.";
+}
+
+function report(){
+let target=document.getElementById("reportTarget").value;
+let text=document.getElementById("reportText").value;
+
+if(!target||!text){
+document.getElementById("status").innerText="Please complete both fields.";
+return;
+}
+
+let reports=JSON.parse(localStorage.getItem("reports")||"[]");
+
+reports.push({
+target:target,
+description:text,
+date:new Date().toISOString()
+});
+
+localStorage.setItem("reports",JSON.stringify(reports));
+
+document.getElementById("status").innerText=
+"✅ Report submitted successfully for review.";
+
+document.getElementById("reportTarget").value="";
+document.getElementById("reportText").value="";
+}
+</script>
+
+</body>
+</html>
